@@ -5,29 +5,23 @@ const developmentPreviewMeta =
   /<meta(?=[^>]*\bname=["']codex-preview["'])(?=[^>]*\bcontent=["']development["'])[^>]*>/i;
 
 test("renders development preview metadata", async () => {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
-  const { default: worker } = await import(workerUrl.href);
-
-  const response = await worker.fetch(
-    new Request("http://localhost/", {
-      headers: { accept: "text/html" },
-    }),
-    {
-      ASSETS: {
-        fetch: async () => new Response("Not found", { status: 404 }),
-      },
-    },
-    {
-      waitUntil() {},
-      passThroughOnException() {},
-    },
-  );
-
+  const { unstable_dev } = await import("wrangler");
+  const { fileURLToPath } = await import("node:url");
+  const worker = await unstable_dev(fileURLToPath(new URL("../dist/server/index.js", import.meta.url)), {
+      config: "dist/server/wrangler.json",
+  local: true,
+      compatibilityFlags: ["nodejs_compat"],
+    experimental: { disableExperimentalWarning: true },
+  });
+  try {
+  const response = await worker.fetch("http://localhost/", { headers: { accept: "text/html" } });
   assert.equal(response.status, 200);
   assert.match(
     response.headers.get("content-type") ?? "",
     /^text\/html\b/i,
   );
   assert.match(await response.text(), developmentPreviewMeta);
+  } finally {
+    await worker.stop();
+  }
 });
