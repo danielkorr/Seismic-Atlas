@@ -19,7 +19,7 @@ hosting="${SITES_PROJECT_ROOT}/dist/.openai/hosting.json"
   exit 66
 }
 
-node --input-type=module - "${worker}" "${hosting}" <<'NODE'
+timeout --signal=TERM --kill-after=10s 90s node --input-type=module - "${worker}" "${hosting}" <<'NODE'
 import { readFile } from "node:fs/promises";
 
 
@@ -30,7 +30,6 @@ const { unstable_dev } = await import("wrangler");
 const worker = await unstable_dev(workerPath, {
   config: "dist/server/wrangler.json",
   local: true,
-  compatibilityDate: "2026-11-06",
   compatibilityFlags: ["nodejs_compat"],
   experimental: { disableExperimentalWarning: true },
 });

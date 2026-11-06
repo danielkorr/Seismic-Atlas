@@ -10,8 +10,7 @@ test("renders development preview metadata", async () => {
   const worker = await unstable_dev(fileURLToPath(new URL("../dist/server/index.js", import.meta.url)), {
       config: "dist/server/wrangler.json",
   local: true,
-    compatibilityDate: "2026-11-06",
-    compatibilityFlags: ["nodejs_compat"],
+      compatibilityFlags: ["nodejs_compat"],
     experimental: { disableExperimentalWarning: true },
   });
   try {
