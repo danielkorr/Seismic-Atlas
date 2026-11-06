@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Seismic Atlas — Global Earthquake Explorer",
   description:
-    "Live magnitude 4+ earthquake reporting and 150 years of explorable seismic history.",
+    "Live magnitude 5+ earthquake reporting and 150 years of explorable seismic history.",
   other: {
     "codex-preview": "development",
   },

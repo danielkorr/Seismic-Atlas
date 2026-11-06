@@ -70,7 +70,7 @@ Live mode requests:
 
 - Start: seven days before the request
 - End: current time
-- Minimum magnitude: 4.0
+- Minimum magnitude: 5.0
 - Order: newest first
 - Limit: 2,000 events
 

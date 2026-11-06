@@ -1,7 +1,7 @@
 # Seismic Atlas
 
 Seismic Atlas is an interactive global earthquake reporting and historical
-mapping site. It plots every USGS catalog event at magnitude 4.0 or greater in
+mapping site. It plots every USGS catalog event at magnitude 5.0 or greater in
 a rolling seven-day window and provides decade-by-decade exploration from 1876
 to the present.
 
@@ -9,7 +9,7 @@ to the present.
 
 ## Features
 
-- Live global M4.0+ earthquake map, refreshed every five minutes
+- Live global M5.0+ earthquake map, refreshed every five minutes
 - Detailed event inspector with coordinates, depth, magnitude type, felt
   reports, tsunami flag, PAGER alert, source network, and location-quality data
 - Historical mapping in ten-year increments from 1876 to the present

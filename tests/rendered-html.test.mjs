@@ -24,6 +24,8 @@ test("renders development preview metadata", async () => {
   assert.match(html, developmentPreviewMeta);
   assert.match(html, /<title>Cascadia — schematic location<\/title>/);
   assert.match(html, /<title>M6\.2 · Aleutian Islands, Alaska<\/title>/);
+  assert.match(html, /Global M5\.0\+ earthquakes/);
+  assert.match(html, /events plotted at M5\.0\+/);
   assert.match(html, /22:58:20/);
   } finally {
     await worker.stop();

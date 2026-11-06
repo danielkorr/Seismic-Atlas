@@ -63,6 +63,7 @@ type DataState = "loading" | "live" | "historical" | "fallback" | "error";
 
 const WIDTH = 1000;
 const HEIGHT = 500;
+const LIVE_MIN_MAGNITUDE = 5;
 const projection = geoEquirectangular()
   .scale(159)
   .translate([WIDTH / 2, HEIGHT / 2 + 2]);
@@ -194,11 +195,6 @@ const FALLBACK_EVENTS: QuakeFeature[] = [
   ["sample-tonga", 5.6, "Tonga region", -175.4, -21.2, 186],
   ["sample-chile", 5.3, "offshore Atacama, Chile", -71.8, -25.6, 42],
   ["sample-indonesia", 5.1, "south of Java, Indonesia", 110.2, -9.8, 63],
-  ["sample-california", 4.7, "Central California", -120.7, 36.4, 9],
-  ["sample-greece", 4.6, "Dodecanese Islands, Greece", 27.4, 36.1, 18],
-  ["sample-atlantic", 4.5, "northern Mid-Atlantic Ridge", -36.2, 36.9, 10],
-  ["sample-nz", 4.4, "South Island, New Zealand", 171.5, -43.2, 16],
-  ["sample-himalaya", 4.3, "western Xizang", 81.2, 32.1, 12],
 ].map(([id, mag, place, lon, lat, depth], index) => ({
   type: "Feature" as const,
   id: String(id),
@@ -387,7 +383,7 @@ export default function SeismicDashboard() {
     const start = new Date(end.getTime() - 7 * 24 * 60 * 60 * 1000);
     try {
       const response = await fetch(
-        buildQuery(start.toISOString(), end.toISOString(), 4, undefined, 2000).replace(
+        buildQuery(start.toISOString(), end.toISOString(), LIVE_MIN_MAGNITUDE, undefined, 2000).replace(
           "orderby=magnitude",
           "orderby=time",
         ),
@@ -600,14 +596,14 @@ export default function SeismicDashboard() {
           <h1>{mode === "live" ? "Earth in motion, right now." : "150 years of seismic history."}</h1>
           <p className="intro-copy">
             {mode === "live"
-              ? "Every globally reported earthquake of magnitude 4.0 or greater during the past seven days — mapped, searchable, and ready for close inspection."
+              ? "Every globally reported earthquake of magnitude 5.0 or greater during the past seven days — mapped, searchable, and ready for close inspection."
               : "Move through ten-year windows from 1876 to today. Compare plate margins, fault systems, and subduction zones without losing event-level evidence."}
           </p>
         </div>
         <div className="intro-note">
           <span>{mode === "live" ? "7-day rolling window" : "10-year catalog windows"}</span>
           <strong>{events.length.toLocaleString()}</strong>
-          <small>{mode === "live" ? "events plotted at M4.0+" : "events in current query"}</small>
+          <small>{mode === "live" ? "events plotted at M5.0+" : "events in current query"}</small>
         </div>
       </section>
 
@@ -676,7 +672,7 @@ export default function SeismicDashboard() {
           <div className="map-toolbar">
             <div>
               <p className="section-kicker">{mode === "live" ? "Current activity" : "Catalog result"}</p>
-              <h2>{mode === "live" ? "Global M4.0+ earthquakes" : `${appliedHistory.decade}–${Math.min(appliedHistory.decade + 9, new Date().getUTCFullYear())} · ${(REGIONS.find((r) => r.id === appliedHistory.regionId) ?? REGIONS[0]).short}`}</h2>
+              <h2>{mode === "live" ? "Global M5.0+ earthquakes" : `${appliedHistory.decade}–${Math.min(appliedHistory.decade + 9, new Date().getUTCFullYear())} · ${(REGIONS.find((r) => r.id === appliedHistory.regionId) ?? REGIONS[0]).short}`}</h2>
             </div>
             <div className="map-actions">
               <button
@@ -837,7 +833,7 @@ export default function SeismicDashboard() {
         <article>
           <span>Events mapped</span>
           <strong>{events.length.toLocaleString()}</strong>
-          <small>{mode === "live" ? "Past 7 days · M4.0+" : "Current historical query"}</small>
+          <small>{mode === "live" ? "Past 7 days · M5.0+" : "Current historical query"}</small>
         </article>
         <article>
           <span>Largest event</span>
