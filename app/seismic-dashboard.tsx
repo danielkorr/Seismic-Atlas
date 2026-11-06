@@ -205,8 +205,8 @@ const FALLBACK_EVENTS: QuakeFeature[] = [
   properties: {
     mag: Number(mag),
     place: String(place),
-    time: Date.now() - (index + 1) * 3_700_000,
-    updated: Date.now() - index * 3_600_000,
+    time: Date.UTC(2026, 0, 1) - (index + 1) * 3_700_000,
+    updated: Date.UTC(2026, 0, 1) - index * 3_600_000,
     url: "https://earthquake.usgs.gov/earthquakes/map/",
     felt: index % 3 === 0 ? 18 + index * 7 : null,
     cdi: null,
@@ -299,6 +299,13 @@ function StatusPill({ state }: { state: DataState }) {
 }
 
 export default function SeismicDashboard() {
+  const [utcClock, setUtcClock] = useState<string | null>(null);
+  useEffect(() => {
+    const update = () => setUtcClock(new Date().toISOString().slice(11, 16));
+    update();
+    const timer = setInterval(update, 60_000);
+    return () => clearInterval(timer);
+  }, []);
   const [mode, setMode] = useState<ViewMode>("live");
   const [events, setEvents] = useState<QuakeFeature[]>(FALLBACK_EVENTS);
   const [dataState, setDataState] = useState<DataState>("loading");
@@ -583,7 +590,7 @@ export default function SeismicDashboard() {
         </nav>
         <div className="topbar-meta">
           <StatusPill state={dataState} />
-          <span className="utc-clock">UTC · {new Date().toISOString().slice(11, 16)}</span>
+          <span className="utc-clock">UTC · {utcClock ?? "—"}</span>
         </div>
       </header>
 
@@ -714,7 +721,7 @@ export default function SeismicDashboard() {
                 <g className="boundary-layer" aria-label="Schematic plate and fault context">
                   {BOUNDARY_LINES.map((line) => (
                     <path key={line.name} d={projectedLine(line.points)}>
-                      <title>{line.name} — schematic location</title>
+                      <title>{`${line.name} — schematic location`}</title>
                     </path>
                   ))}
                 </g>
@@ -746,7 +753,7 @@ export default function SeismicDashboard() {
                       {isSelected && <circle r={radius + 6} className="selection-ring" />}
                       <circle r={radius} fill={magnitudeColor(mag)} className="quake-dot" />
                       {mag >= 6 && <circle r={radius + 2.5} className="strong-ring" />}
-                      <title>M{magnitudeLabel(event.properties.mag)} · {event.properties.place}</title>
+                      <title>{`M${magnitudeLabel(event.properties.mag)} · ${event.properties.place}`}</title>
                     </g>
                   );
                 })}
