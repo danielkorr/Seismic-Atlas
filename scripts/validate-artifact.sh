@@ -28,6 +28,7 @@ JSON.parse(await readFile(hostingPath, "utf8"));
 
 const { unstable_dev } = await import("wrangler");
 const worker = await unstable_dev(workerPath, {
+  config: "dist/server/wrangler.json",
   local: true,
   compatibilityDate: "2026-11-06",
   compatibilityFlags: ["nodejs_compat"],
