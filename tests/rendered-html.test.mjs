@@ -20,7 +20,11 @@ test("renders development preview metadata", async () => {
     response.headers.get("content-type") ?? "",
     /^text\/html\b/i,
   );
-  assert.match(await response.text(), developmentPreviewMeta);
+  const html = await response.text();
+  assert.match(html, developmentPreviewMeta);
+  assert.match(html, /<title>Cascadia — schematic location<\/title>/);
+  assert.match(html, /<title>M6\.2 · Aleutian Islands, Alaska<\/title>/);
+  assert.match(html, /22:58:20/);
   } finally {
     await worker.stop();
   }
